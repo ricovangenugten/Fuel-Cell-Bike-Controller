@@ -64,12 +64,12 @@
 								<inputType id="de.innot.avreclipse.cppcompiler.input.1469960720" superClass="de.innot.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.linker.winavr.app.release.1631413036" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.app.release"/>
-							<tool commandLinePattern="${COMMAND} -s -Os -Wl,--gc-sections ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS} -lm ${FLAGS} " id="de.innot.avreclipse.tool.cpplinker.app.release.2103694385" name="AVR C++ Linker" superClass="de.innot.avreclipse.tool.cpplinker.app.release">
+							<tool commandLinePattern="${COMMAND} -s -Os -Wl,--gc-sections ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS} -lm ${FLAGS}" id="de.innot.avreclipse.tool.cpplinker.app.release.2103694385" name="AVR C++ Linker" superClass="de.innot.avreclipse.tool.cpplinker.app.release">
 								<option id="de.innot.avreclipse.cpplinker.option.libs.1986457018" name="Libraries (-l)" superClass="de.innot.avreclipse.cpplinker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="ArduinoCore"/>
 								</option>
 								<option id="de.innot.avreclipse.cpplinker.option.libpath.340954913" name="Libraries Path (-L)" superClass="de.innot.avreclipse.cpplinker.option.libpath" valueType="stringList">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc}/ArduinoCore/Release/&quot;"/>
+									<listOptionValue builtIn="false" value="../../ArduinoCore/Release/"/>
 								</option>
 								<inputType id="de.innot.avreclipse.tool.cpplinker.input.1207861046" name="OBJ Files" superClass="de.innot.avreclipse.tool.cpplinker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
