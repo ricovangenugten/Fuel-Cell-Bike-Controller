@@ -1,3 +1,42 @@
-Steps to import this project into Eclipse:
+Installation steps:
 
-TBD 
+ - On windows: install the usb-driver for your arduino, see http://arduino.cc/en/Guide/Windows#toc4
+ - Install avr-gcc
+  - Windows: 
+   - Install WinAVR from http://souceforge.net/projects/winavr/files
+   - copy avrdude.exe (arduino-xxxx\hardware\tools\avr\bin) and avrdude.conf (arduino-xxxx\hardware\tools\avr\etc) from the arduino application to winavr (WinAVR-xx/bin)
+  - Mac OSX: Install CrossPack AVR from http://www.obdev.at/crosspack/index.html
+  - Linux: apt-get install avrdude binutils-avr gcc-avr avr-libc gdb-avr
+
+ - Install Eclipse for C/C++ developers
+
+ - Install Eclipse AVR plugin
+  - Go to Help -> Install New Software
+  - At Work with: fill in http://avr-eclipse.sourceforge.net/updatesite/, click Add
+  - Check AVR Eclipse Plugin, click next and finish the installation
+
+ - Import GIT repository
+  - Make an account at github.com
+  - Go to File -> Import -> Git -> Projects from Git
+  - Click Clone
+  - At URI: fill in https://github.com/ricovangenugten/Fuel-Cell-Bike-Controller.git
+  - At Authentication fill in your github credentials
+  - Click next, select all branches and finish the wizard
+  - Check Import Existing Projects and finish the wizard
+
+ - Build Arduino Core Library
+  - Right click on the project and go to Project Properties
+  - Go to AVR -> AVRDude and click New
+  - Select the right programmer hardware (STK500v2 for the Arduino Mega 2560)
+  - Specify the right port (On windows: COMx, see Device Manager. On mac osx/linuxL /dev/tty.x)
+  - Select the right speed (115200 for the stk500v2)
+  - Go to AVR -> Target hardware, click Load from MCU. If this works, uploading should work too.
+  - Build the project by clicking the hammer icon
+
+Now you should be good to go to edit code. The next steps are for building the code and uploading it
+
+ - Go to the FuelCellBikeController project properties, go to AVR -> AVRDude and select the programmer configuration created before and click ok
+ - Click on the FuelCellBikeController project and click the hammer icon to build it
+ - Click on the AVR icon to upload the project
+
+done!
