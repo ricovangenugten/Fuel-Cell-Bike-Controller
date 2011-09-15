@@ -1,11 +1,11 @@
-Installation steps:
+This is the installation manual for the UC Davis Fuel Cell Bike controller code. This is an Eclipse project. It contains the Arduino Core Library and is therefore completely self contained, the Arduino IDE is not needed. All command line options are configured so that they are as similar to the Arduino IDE as possible creating equally small binaries.
 
  - On windows: install the usb-driver for your arduino, see http://arduino.cc/en/Guide/Windows#toc4
  - Install avr-gcc
   - Windows: 
-   - Install WinAVR from http://souceforge.net/projects/winavr/files
+   - Install WinAVR from http://sourceforge.net/projects/winavr/files
    - copy avrdude.exe (arduino-xxxx\hardware\tools\avr\bin) and avrdude.conf (arduino-xxxx\hardware\tools\avr\etc) from the arduino application to winavr (WinAVR-xx/bin)
-  - Mac OSX: Install CrossPack AVR from http://www.obdev.at/crosspack/index.html
+  - Mac OSX: Install CrossPack AVR from http://www.obdev.at/crosspack/
   - Linux: apt-get install avrdude binutils-avr gcc-avr avr-libc gdb-avr
 
  - Install Eclipse for C/C++ developers
