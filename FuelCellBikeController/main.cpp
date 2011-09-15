@@ -226,7 +226,7 @@ void setup () {
   state = 0; //initial state of 0 -- set tank pressure/initial batt charge
   prev_state = 0;
   timer_prev = 0;
-  lcd.print("UCD Hybrid Bike");
+  lcd.print("testtest");
   printed = 1;
   ampHourBatt = amphr_initial;
   fanState = 0;
