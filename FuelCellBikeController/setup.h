@@ -1,7 +1,3 @@
-#include "libraries/LiquidCrystal/LiquidCrystal.h"
-#include "libraries/OneWire/OneWire.h"
-#include "libraries/DallasTemperature/DallasTemperature.h"
-
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 //Temperature Sensors in battery
@@ -13,7 +9,6 @@ DallasTemperature mt(&motTemp);
 //Temperature sensor on tank
 OneWire tankTemp(42);
 DallasTemperature tt(&tankTemp);
-
 
 void setup () {
 
