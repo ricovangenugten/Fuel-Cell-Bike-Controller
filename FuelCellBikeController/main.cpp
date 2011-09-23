@@ -1,13 +1,24 @@
+// Arduino stuff
 #include <WProgram.h>
-#include "arduino.h"
+#include "arduino_error_handling.h"
 
-//#include "old_code.h"
+// External libraries
+#include "libraries/LiquidCrystal/LiquidCrystal.h"
+#include "libraries/OneWire/OneWire.h"
+#include "libraries/DallasTemperature/DallasTemperature.h"
 
+// Custom stuff
 #include "constants.h"
+#include "functions.h"
+#include "sensors/voltage.h"
+
+// General setup function
 #include "setup.h"
 
-#include "hardware_tests/voltage_sensing.h"
+// Loop function
+#include "hardware_tests/voltage.h"
 
+// Let's roll!
 int main(void) {
 
   init();
@@ -23,6 +34,3 @@ int main(void) {
 
   return 0;
 }
-
-
-
