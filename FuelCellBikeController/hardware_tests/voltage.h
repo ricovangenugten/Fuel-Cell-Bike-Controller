@@ -8,7 +8,6 @@ void additional_setup() {
   lcd.print("Voltage sensing");
   delay(1000);
 
-  v_reset();
 }
 
 void loop() {

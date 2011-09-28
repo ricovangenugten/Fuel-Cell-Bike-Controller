@@ -1,5 +1,5 @@
-float bat_I = 0;
-float bat_zero = 0;
+float i_bat = 0;
+float i_bat_zero = 0;
 
 #define ADDITIONAL_SETUP_PRESENT
 void additional_setup() {
@@ -7,15 +7,15 @@ void additional_setup() {
   lcd.print("Current sensing test");
   delay(1000);
 
-  bat_zero = analogRead(BAT_I_SENSOR);
+  i_bat_zero = analogRead(I_BAT);
 }
 
 void loop() {
 
-  bat_I = (analogRead(BAT_I_SENSOR)-bat_zero)*50/0.625;
+  i_bat = (analogRead(I_BAT)-i_bat_zero)*5/1023*50/0.625;
   lcd.clear();
   lcd.print("Bat: ");
-  lcd.print(bat_I, 3);
+  lcd.print(i_bat, 3);
   lcd.print(" Amp");
   delay(1000);
 

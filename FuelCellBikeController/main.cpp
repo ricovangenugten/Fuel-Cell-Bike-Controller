@@ -11,12 +11,14 @@
 #include "constants.h"
 #include "functions.h"
 #include "sensors/voltage.h"
+#include "sensors/pressure.h"
+#include "sensors/temperature.h"
 
 // General setup function
 #include "setup.h"
 
 // Loop function
-#include "hardware_tests/voltage.h"
+#include "hardware_tests/temperature.h"
 
 // Let's roll!
 int main(void) {

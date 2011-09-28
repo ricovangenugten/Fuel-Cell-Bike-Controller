@@ -7,22 +7,22 @@ void additional_setup() {
 
 void loop() {
 
-  digitalWrite(BAT_FAN_ENABLE, HIGH);
+  digitalWrite(FAN_BAT, HIGH);
   lcd.clear();
   lcd.print("Batt fan on");
   delay(10000);
 
-  digitalWrite(BAT_FAN_ENABLE, LOW);
+  digitalWrite(FAN_BAT, LOW);
   lcd.clear();
   lcd.print("Batt fan off");
   delay(1000);
 
-  digitalWrite(MOT_FAN_ENABLE, HIGH);
+  digitalWrite(FAN_MOTOR, HIGH);
   lcd.clear();
   lcd.print("Motor fan on");
   delay(10000);
 
-  digitalWrite(MOT_FAN_ENABLE, LOW);
+  digitalWrite(FAN_MOTOR, LOW);
   lcd.clear();
   lcd.print("Motor fan off");
   delay(1000);

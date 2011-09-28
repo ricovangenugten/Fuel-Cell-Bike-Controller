@@ -7,22 +7,22 @@ void additional_setup() {
 
 void loop() {
 
-  digitalWrite(MOTOR_SOLENOID, HIGH);
+  digitalWrite(SOL_MOTOR, HIGH);
   lcd.clear();
   lcd.print("Motor solenoid on");
   delay(1000);
 
-  digitalWrite(MOTOR_SOLENOID, LOW);
+  digitalWrite(SOL_MOTOR, LOW);
   lcd.clear();
   lcd.print("Motor solenoid off");
   delay(1000);
 
-  digitalWrite(CONTACTOR_SOLENOID, HIGH);
+  digitalWrite(SOL_CONTACT, HIGH);
   lcd.clear();
   lcd.print("Contactor solenoid on");
   delay(1000);
 
-  digitalWrite(CONTACTOR_SOLENOID, LOW);
+  digitalWrite(SOL_CONTACT, LOW);
   lcd.clear();
   lcd.print("Contactor solenoid off");
   delay(1000);
