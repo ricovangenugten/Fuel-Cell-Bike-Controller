@@ -18,7 +18,7 @@
 #include "setup.h"
 
 // Loop function
-#include "hardware_tests/temperature.h"
+#include "hardware_tests/current_fc_mot.h"
 
 // Let's roll!
 int main(void) {

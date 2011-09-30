@@ -20,8 +20,8 @@
 #define LCD_EN         51
 #define LCD_RS         53
 #define BC_I_LIMIT     11
-#define I_AUX          A9
-#define I_BAT         A10
+#define I_BAT_LOW      A9
+#define I_BAT_HIGH    A10
 #define I_FC          A11
 #define I_MOTOR       A12
 #define P_TANK        A13
@@ -29,5 +29,12 @@
 #define V_BAT         A15
 
 //other
-#define V_BAT_C         0.1113
-#define V_FC_C          0.1107
+#define V_BAT_C         0.0840
+#define V_FC_C          0.0850
+
+// current sensor calibration
+// calculation C = 5 [volts] / 1023 [steps] * Ir [rated Amps] / 0.625 [volts / Ir amps] / amplifier_gain
+#define I_FC_C          0.05586 // = 5/1023*50/0.625/7.0
+#define I_BAT_LOW_C     0.3910  // = 5/1023*50/0.625/1
+#define I_BAT_HIGH_C    0.7174  // = 5/1023*200/0.625/2.18
+#define I_MOTOR_C       0.7174  // = 5/1023*200/0.625/2.18
