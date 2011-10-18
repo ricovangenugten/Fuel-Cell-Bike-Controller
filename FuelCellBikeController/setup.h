@@ -13,14 +13,27 @@ void setup () {
   pinMode(FAN_BAT,     OUTPUT);
   pinMode(SOL_CONTACT, OUTPUT);
   pinMode(SOL_MOTOR,   OUTPUT);
-  pinMode(BC_I_LIMIT,  OUTPUT);
+  pinMode(I_CONTROL,  OUTPUT);
+  pinMode(LED_WARNING, OUTPUT);
 
-  // reset voltage sensors
+  // set pullup resistors
+  digitalWrite(BUTTON_1, HIGH);
+  digitalWrite(BUTTON_2, HIGH);
+  digitalWrite(BUTTON_3, HIGH);
+  digitalWrite(BUTTON_4, HIGH);
+  digitalWrite(BUTTON_5, HIGH);
+  digitalWrite(SW_KICKSTAND, HIGH);
 
   lcd.print("UCD Hybrid Bike");
   delay(1000);
 
-  // reset voltage sensors
+  // reset voltage measurement
   v_reset();
+
+  // reset current measurement
+  i_reset();
+
+  // setup current control output
+  i_control_setup();
 
 }

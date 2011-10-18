@@ -3,11 +3,9 @@ float v_fc;
 
 #define ADDITIONAL_SETUP_PRESENT
 void additional_setup() {
-
   lcd.clear();
   lcd.print("Voltage sensing");
   delay(1000);
-
 }
 
 void loop() {
