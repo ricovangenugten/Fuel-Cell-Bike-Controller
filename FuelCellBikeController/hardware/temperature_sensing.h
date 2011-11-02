@@ -24,7 +24,7 @@ float t_tank() {
   return dt_tank.getTempCByIndex(0);
 }
 
-void t_begin() {
+void t_setup() {
   dt_bat.begin();
   dt_motor.begin();
   dt_tank.begin();

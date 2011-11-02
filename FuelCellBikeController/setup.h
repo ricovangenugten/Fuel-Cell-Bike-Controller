@@ -1,19 +1,17 @@
-LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
-
 void setup () {
 
-  // start LCD
-  lcd.begin(16, 2);
+  // setup lcd
+  lcd_setup();
 
-  // start temp sensors
-  t_begin();
+  // setup temp sensors
+  t_setup();
 
   // set output pins, the rest default to inputs
   pinMode(FAN_MOTOR,   OUTPUT);
   pinMode(FAN_BAT,     OUTPUT);
   pinMode(SOL_CONTACT, OUTPUT);
   pinMode(SOL_MOTOR,   OUTPUT);
-  pinMode(I_CONTROL,  OUTPUT);
+  pinMode(I_CONTROL,   OUTPUT);
   pinMode(LED_WARNING, OUTPUT);
 
   // set pullup resistors
@@ -24,8 +22,8 @@ void setup () {
   digitalWrite(BUTTON_5, HIGH);
   digitalWrite(SW_KICKSTAND, HIGH);
 
-  lcd.print("UCD Hybrid Bike");
-  delay(1000);
+  // show message and wait
+  lcd_delay("UCD Hybrid Bike");
 
   // reset voltage measurement
   v_reset();

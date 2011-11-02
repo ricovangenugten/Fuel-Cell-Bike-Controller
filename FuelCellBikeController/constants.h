@@ -65,3 +65,6 @@
 
 #define I_CONTROL_C      0.1953  // [amps/step]
 #define I_CONTROLLER_P   5       // [steps/amp]
+
+#define LOOP_INTERVAL  500       // [ms]
+#define TIMER_INTERVAL 100000    // [us]
