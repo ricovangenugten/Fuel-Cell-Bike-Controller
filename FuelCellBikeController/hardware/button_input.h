@@ -1,4 +1,4 @@
-int button_action_allowed = 0;
+unsigned long button_action_allowed = 0;
 
 int button_down() {
   int button = 0;
@@ -9,6 +9,6 @@ int button_down() {
     if (digitalRead(BUTTON_4) == LOW) button = 4;
     if (digitalRead(BUTTON_5) == LOW) button = 5;
   }
-  if (button > 0) button_action_allowed = millis()+1000;
+  if (button > 0) button_action_allowed = millis()+BUTTON_DEAD_TIME;
   return button;
 }

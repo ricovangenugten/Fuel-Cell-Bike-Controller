@@ -1,5 +1,7 @@
-// Arduino stuff
+// Standard C libs
 #include <math.h>
+
+// Arduino stuff
 #include <WProgram.h>
 #include "arduino_error_handling.h"
 
@@ -8,16 +10,20 @@
 #include "libraries/OneWire/OneWire.h"
 #include "libraries/DallasTemperature/DallasTemperature.h"
 #include "libraries/TimerOne/TimerOne.h"
-
-// Sdfat
 #include "libraries/SdFat/SdFat.h"
 #include "libraries/SdFat/SdFatUtil.h"
 #include "libraries/BufferedWriter/BufferedWriter.h"
 
-// Custom stuff
-#include "constants.h"
-#include "functions.h"
-#include "hardware/lcd_display.h"
+// Arduino pinout
+#include "constants_pinout.h"
+
+// Config
+#include "constants_config.h"
+
+// Global lcd object
+LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
+
+// Hardware abstraction
 #include "hardware/voltage_sensing.h"
 #include "hardware/current_sensing.h"
 #include "hardware/pressure_sensing.h"
@@ -25,9 +31,15 @@
 #include "hardware/pot_input.h"
 #include "hardware/button_input.h"
 #include "hardware/current_control.h"
+#include "hardware/solenoid_control.h"
+#include "hardware/fan_control.h"
 #include "hardware/sd_storage.h"
-#include "basic/soc_ocv.h"
+
+// Basic functionality
+#include "basic/menu.h"
+#include "basic/soc.h"
 #include "basic/data_acquisition.h"
+#include "basic/current_controller.h"
 
 // General setup function
 #include "setup.h"
@@ -35,7 +47,7 @@
 // Timer interrupt function
 #include "timer_interrupt.h"
 
-// Loop function
+// Loop function, include "main_loop.h" or any test like "tests/fans.h" here to run it
 #include "main_loop.h"
 
 // Let's roll!
@@ -53,8 +65,8 @@ int main(void) {
   #endif
     
   // start timed interval function
-  Timer1.initialize(TIMER_INTERVAL);
-  Timer1.attachInterrupt(timer_interrupt);
+  //Timer1.initialize(TIMER_INTERVAL);
+  //Timer1.attachInterrupt(timer_interrupt);
 
   // loop forever
   for (;;)

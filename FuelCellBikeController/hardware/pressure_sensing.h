@@ -1,3 +1,3 @@
-float p_tank() {
-  return read_average(P_TANK)*20.8067;
+int32_t p_tank() {
+  return int32_t(analogRead(P_TANK))*P_TANK_C;
 }
