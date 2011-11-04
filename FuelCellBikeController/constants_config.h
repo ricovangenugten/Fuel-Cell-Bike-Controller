@@ -12,19 +12,22 @@
 // pressure sensor calibration
 #define P_TANK_C          20.8067  // 6.894*617.5*5/1023 [kPa]
 
-/* SOC by OCV estimation
- * Fitted data measured at a 2A load to account for the 12v system still drawing power
- * SOC_OCV = SOC_OCV_C0 + SOC_OCV_C1*(v_bat-SOC_V_OFFSET)^1 + ... + SOC_OCV_Cn*(v_bat-SOC_V_OFFSET)^n
- */
-#define SOC_OCV_CAP        5.000e6F // [uAh]
-#define SOC_OCV_OFFSET     4.605e4F // [mV]
-#define SOC_OCV_SCALE      1.767e3F
-#define SOC_OCV_C5         4.546e4F
-#define SOC_OCV_C4        -1.396e5F
-#define SOC_OCV_C3        -7.084e4F
-#define SOC_OCV_C2         5.947e5F
-#define SOC_OCV_C1        -1.356e6F
-#define SOC_OCV_C0         1.821e6F
+// SOC config
+#define SOC_CAPACITY       5.000e3 // [mAh]
+
+// SOC by OCV estimation
+// Fitted data measured at a 2A load to account for the 12v system still drawing power
+// SOC_OCV = SOC_OCV_C0 + SOC_OCV_C1*(v_bat-SOC_V_OFFSET)^1 + ... + SOC_OCV_Cn*(v_bat-SOC_V_OFFSET)^n
+#define SOC_OCV_V_MIN      4.322e4 // [mV]
+#define SOC_OCV_V_MAX      5.019e4 // [mV]
+#define SOC_OCV_V_OFFSET   4.605e4 // [mV]
+#define SOC_OCV_V_SCALE    1.767e3
+#define SOC_OCV_C5         4.546e4
+#define SOC_OCV_C4        -1.396e5
+#define SOC_OCV_C3        -7.084e4
+#define SOC_OCV_C2         5.947e5
+#define SOC_OCV_C1        -1.356e6
+#define SOC_OCV_C0         1.821e6
 
 // SOC by coulomb counting
 // Interval
@@ -35,7 +38,6 @@
 // Efficiency
 #define SOC_CC_CHARGE_EFF  0.9
 #define SOC_CC_DISCHA_EFF  0.9
-
 
 // current controller proportional constant
 #define I_CONTROLLER_P  5e-3       // [steps/amp]

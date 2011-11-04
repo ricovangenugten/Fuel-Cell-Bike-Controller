@@ -34,6 +34,7 @@ void loop() {
 
   // wait for button presses until start of next iteration
   while (millis() % ITER_INTERVAL) {
+
     switch (button_down()) {
     case 1: // action button
       // when in daq menu page
@@ -89,7 +90,7 @@ void loop() {
   pw_mot = int32_t(float(v_bat/1e3)*float(i_mot/1e3));
 
   // Temperature measurements
-  //t_h2 = t_tank();
+  t_h2 = t_tank();
   //t_bat = t_battery();
   //t_mot = t_motor();
 

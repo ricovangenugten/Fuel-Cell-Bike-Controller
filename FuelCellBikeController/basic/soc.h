@@ -6,15 +6,16 @@ uint32_t soc_by_ocv(uint32_t v_bat) {
   float soc_ocv = 0;
   float current_term = 0;
 
+  if (v_bat < SOC_OCV_V_MIN) v_bat = SOC_OCV_V_MIN;
+  if (v_bat > SOC_OCV_V_MAX) v_bat = SOC_OCV_V_MAX;
+
   for(int i=0;i<6;i++) {
     current_term = params[i];
     for(int j=0;j<i;j++) {
-      current_term = current_term*((v_bat-SOC_OCV_OFFSET)/SOC_OCV_SCALE);
+      current_term = current_term*((v_bat-SOC_OCV_V_OFFSET)/SOC_OCV_V_SCALE);
     }
     soc_ocv += current_term;
   }
-
-  if (soc_ocv < 0) soc_ocv = 0;
 
   return roundf(soc_ocv);
 }
@@ -43,13 +44,13 @@ void soc_by_cc_stop() {
 }
 
 uint32_t soc_by_cc() {
-  return soc_cc;
+  return soc_cc/1e3;
 }
 
 uint32_t soc_init_val() {
-  return soc_init;
+  return soc_init/1e3;
 }
 
 int soc_percentage(uint32_t charge) {
-  return 100-charge*100/SOC_OCV_CAP;
+  return 100-charge*100/SOC_CAPACITY;
 }
