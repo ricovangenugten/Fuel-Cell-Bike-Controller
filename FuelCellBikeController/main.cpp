@@ -63,10 +63,6 @@ int main(void) {
   #ifdef ADDITIONAL_SETUP_PRESENT
     additional_setup();
   #endif
-    
-  // start timed interval function
-  //Timer1.initialize(TIMER_INTERVAL);
-  //Timer1.attachInterrupt(timer_interrupt);
 
   // loop forever
   for (;;)

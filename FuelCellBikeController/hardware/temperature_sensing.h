@@ -10,23 +10,32 @@ DallasTemperature dt_motor(&t_motor_onewire);
 OneWire t_tank_onewire(T_TANK);
 DallasTemperature dt_tank(&t_tank_onewire);
 
-void t_request() {
+DeviceAddress at_motor;
+DeviceAddress at_tank;
+
+void t_battery_request() {
   dt_bat.requestTemperatures();
+}
+
+void t_motor_request() {
   dt_motor.requestTemperatures();
+}
+
+void t_tank_request() {
   dt_tank.requestTemperatures();
 }
 
-int t_battery() {
-  return roundf(dt_bat.getTempCByIndex(0));
+float t_battery() {
+  return dt_bat.getTempCByIndex(0);
 }
 
-int t_motor() {
-  return roundf(dt_motor.getTempCByIndex(0));
+float t_motor() {
+  return dt_motor.getTempC(at_motor);
 
 }
 
-int t_tank() {
-  return roundf(dt_tank.getTempCByIndex(0));
+float t_tank() {
+  return dt_tank.getTempC(at_tank);
 }
 
 void t_setup() {
@@ -34,6 +43,8 @@ void t_setup() {
   dt_bat.setWaitForConversion(false);
   dt_motor.begin();
   dt_motor.setWaitForConversion(false);
+  dt_motor.getAddress(at_motor, 0);
   dt_tank.begin();
   dt_tank.setWaitForConversion(false);
+  dt_tank.getAddress(at_tank, 0);
 }

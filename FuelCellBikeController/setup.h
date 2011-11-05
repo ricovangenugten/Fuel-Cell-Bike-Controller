@@ -34,7 +34,6 @@ void setup () {
   // show message
   lcd.print("UCD Hybrid Bike ");
 
-  /*
   lcd.setCursor(0,1);
   lcd.print("Estimating SOC..");
   delay(1000);
@@ -56,6 +55,5 @@ void setup () {
   lcd.print("Fans on..       ");
   fan_motor_on();
   fan_battery_on();
-  */
 
 }

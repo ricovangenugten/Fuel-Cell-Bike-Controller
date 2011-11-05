@@ -1,6 +1,7 @@
 uint32_t timestamp, id, iter_start;
 int32_t soc_charge, i_fc_setpoint, i_fc, i_bat, i_mot, v_fc, v_bat, pw_fc, pw_bat, pw_mot, p_h2, m_h2 = 0;
-int prev_iter_time, iter_usage, t_bat, t_mot, t_h2 = 0;
+int prev_iter_time, iter_usage, t_counter = 0;
+float t_bat, t_mot, t_h2 = 0;
 bool soc_reset_due;
 
 void loop() {
@@ -25,7 +26,11 @@ void loop() {
 
   // request temperatures
   // a delay is needed before the values can be fetched, therefore this is done before the wait
-  t_request();
+  if (t_counter == 9) {
+    t_tank_request();
+    //t_battery_request();
+    //t_motor_request();
+  }
 
   // save iteration time
   if (iter_start > 0) {
@@ -89,10 +94,15 @@ void loop() {
   pw_bat = int32_t(float(v_bat/1e3)*float(i_bat/1e3));
   pw_mot = int32_t(float(v_bat/1e3)*float(i_mot/1e3));
 
-  // Temperature measurements
-  t_h2 = t_tank();
-  //t_bat = t_battery();
-  //t_mot = t_motor();
+  if (t_counter == 9) {
+    // Temperature measurements
+    t_h2 = t_tank();
+    //t_bat = t_battery();
+    //t_mot = t_motor();
+    t_counter = 0;
+  } else {
+    t_counter++;
+  }
 
   // Pressure measurement
   p_h2 = p_tank();
@@ -195,11 +205,11 @@ void loop() {
     sd_bw.putNum(pw_mot);
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
     // Temperature measurements
-    sd_bw.putNum(t_h2);
+    sd_bw.putNum(roundf(t_h2));
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(t_bat);
+    sd_bw.putNum(roundf(t_bat));
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(t_mot);
+    sd_bw.putNum(roundf(t_mot));
     // Hydrogen supply
     sd_bw.putNum(p_h2);
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
@@ -368,7 +378,7 @@ void loop() {
       lcd.print("P:");
       lcd.print(roundf(p_h2/100));
       lcd.print(" b T:");
-      lcd.print(t_h2);
+      lcd.print(t_h2,1);
       lcd.print(" C ");
       break;
 
