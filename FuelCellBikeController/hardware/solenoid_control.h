@@ -1,3 +1,5 @@
+uint32_t solenoid_fc_off_due = 0;
+
 void solenoid_motor_on() {
   digitalWrite(SOL_MOTOR, HIGH);
 }
@@ -12,4 +14,30 @@ void solenoid_contactor_on() {
 
 void solenoid_contactor_off() {
   digitalWrite(SOL_CONTACT, LOW);
+}
+
+void solenoid_fc_on() {
+  digitalWrite(SOL_FC, HIGH);
+}
+
+void solenoid_fc_off() {
+  digitalWrite(SOL_FC, LOW);
+}
+
+void solenoid_fc_toggle_wait() {
+  solenoid_fc_on();
+  delay(1000);
+  solenoid_fc_off();
+}
+
+void solenoid_fc_toggle_schedule() {
+  solenoid_fc_on();
+  solenoid_fc_off_due = millis()+1000;
+}
+
+void solenoid_fc_toggle_control() {
+  if (solenoid_fc_off_due > 0 && millis() > solenoid_fc_off_due) {
+    solenoid_fc_off();
+    solenoid_fc_off_due = 0;
+  }
 }

@@ -5,6 +5,8 @@
 #define FAN_MOTOR      10
 
 // digital double row left
+#define FC_ON          22
+#define SOL_FC         36
 #define FAN_BAT        38
 #define SOL_CONTACT    40
 #define SOL_MOTOR      42
@@ -36,3 +38,5 @@
 #define I_BAT_HIGH     A9
 #define I_BAT_LOW      A10
 #define I_FC           A11
+
+

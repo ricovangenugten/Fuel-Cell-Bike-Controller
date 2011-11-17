@@ -14,14 +14,20 @@ void loop() {
 
   lcd.setCursor(0,0);
   lcd.print("FC:  ");
-  lcd.print(i_fc, 3);
-  lcd.print(" A    ");
+  lcd.print(i_fc/1e3, 1);
+  lcd.print(" A ");
+  lcd.print(analogRead(I_FC));
+  lcd.print("  ");
 
   i_mot = i_motor();
 
   lcd.setCursor(0,1);
   lcd.print("Mot: ");
-  lcd.print(i_mot, 3);
-  lcd.print(" A    ");
+  lcd.print(i_mot/1e3, 1);
+  lcd.print(" A ");
+  lcd.print(analogRead(I_MOTOR));
+  lcd.print("  ");
+
+  delay(500);
 
 }

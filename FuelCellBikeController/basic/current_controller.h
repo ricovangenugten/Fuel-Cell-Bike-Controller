@@ -1,47 +1,49 @@
-int32_t i_fc_set, i_controller_error_id = 0;
+int32_t i_controller_setpoint_value, i_controller_state_id = 0;
+int i_controller_output_value;
 
-int i_controller(float i_fc) {
+void i_controller_input(int32_t i_controller_input_value) {
 
-  int state = 0;
-  float i_fc_error = 0;
-  int i_fc_control_value;
-
-  // do measurement and determine error
-  i_fc_error = i_fc_set - i_fc;
-
-  if (i_fc < 0.5) {
-    i_controller_error_id = 1;
-    return 0;
+  if (I_CONTROLLER_FB_ON) {
+    if (i_controller_input_value < 500) {
+      // input too low, output 0
+      i_controller_state_id = 1;
+      i_controller_output_value = 0;
+    } else {
+      // calculate new output value using feedback
+      i_controller_state_id = 0;
+      i_controller_output_value += roundf((i_controller_setpoint_value-i_controller_input_value)*I_CONTROLLER_FB_C);
+    }
+  } else {
+    // calculate new output value without feedback
+    i_controller_state_id = 0;
+    i_controller_output_value = roundf(i_controller_setpoint_value*I_CONTROLLER_C);
   }
 
-  // calculate new control value
-  i_fc_control_value += roundf(i_fc_error*I_CONTROLLER_P);
-
-  // limit control value
-  if (i_fc_control_value < 0) {
-    i_controller_error_id = 1;
-    i_fc_control_value = 0;
+  // lower limit control value
+  if (i_controller_output_value < 0) {
+    i_controller_state_id = 1;
+    i_controller_output_value = 0;
   }
 
-  if (i_fc_control_value > 255) {
-    i_controller_error_id = 2;
-    i_fc_control_value = 255;
+  // upper limit control value
+  if (i_controller_output_value > 255) {
+    i_controller_state_id = 2;
+    i_controller_output_value = 255;
   }
-
-  // output control value
-  i_controller_error_id = 0;
-  return i_fc_control_value;
 
 }
 
-void i_controller_set(long setpoint) {
-  i_fc_set = setpoint;
+int32_t i_controller_setpoint(int32_t setpoint = -1) {
+  if (setpoint > -1 && setpoint <= 5e4) {
+    i_controller_setpoint_value = setpoint;
+  }
+  return i_controller_setpoint_value;
 }
 
-int32_t i_controller_setpoint() {
-  return i_fc_set;
+int i_controller_state() {
+  return i_controller_state_id;
 }
 
-int32_t i_controller_error() {
-  return i_controller_error_id;
+int i_controller_output() {
+  return i_controller_output_value;
 }

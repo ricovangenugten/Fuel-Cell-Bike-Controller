@@ -1,16 +1,11 @@
 void setup () {
 
-  // setup lcd
-  lcd.begin(16, 2);
-
-  // setup temp sensors
-  t_setup();
-
   // set output pins, the rest default to inputs
   pinMode(FAN_MOTOR,   OUTPUT);
   pinMode(FAN_BAT,     OUTPUT);
   pinMode(SOL_CONTACT, OUTPUT);
   pinMode(SOL_MOTOR,   OUTPUT);
+  pinMode(SOL_FC,      OUTPUT);
   pinMode(I_CONTROL,   OUTPUT);
   pinMode(LED_WARNING, OUTPUT);
 
@@ -22,17 +17,16 @@ void setup () {
   digitalWrite(BUTTON_5, HIGH);
   digitalWrite(SW_KICKSTAND, HIGH);
 
-  // reset voltage measurement
-  v_reset();
+  // setup lcd
+  lcd.begin(LCD_COLS, LCD_ROWS);
+  lcd.print("UCD Hybrid Bike ");
+  delay(1000);
 
-  // reset current measurement
-  i_reset();
+  // setup temp sensors
+  t_setup();
 
   // setup current control output
   i_control_setup();
-
-  // show message
-  lcd.print("UCD Hybrid Bike ");
 
   lcd.setCursor(0,1);
   lcd.print("Estimating SOC..");
@@ -41,19 +35,18 @@ void setup () {
   // Initial SOC estimation
   soc_by_cc_start(soc_by_ocv(v_battery()));
 
+  solenoid_contactor_on();
+  delay(100);
+  lcd.begin(LCD_COLS, LCD_ROWS);
   lcd.setCursor(0,1);
   lcd.print("Contactor on..  ");
-  solenoid_contactor_on();
-  delay(1000);
+  delay(900);
 
   lcd.setCursor(0,1);
-  lcd.print("Motor ctrl on.. ");
-  solenoid_motor_on();
-  delay(1000);
+  lcd.print("FC ctrl on..    ");
+  if (!fc_on()) solenoid_fc_toggle_wait();
 
-  lcd.setCursor(0,1);
-  lcd.print("Fans on..       ");
-  fan_motor_on();
-  fan_battery_on();
+  // start velocity measurement
+  vel_begin();
 
 }

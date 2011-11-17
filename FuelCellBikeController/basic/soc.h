@@ -1,4 +1,5 @@
-uint32_t soc_cc, soc_init = 0;
+uint32_t soc_init = 0;
+uint32_t volatile soc_cc = 0;
 
 uint32_t soc_by_ocv(uint32_t v_bat) {
 
@@ -43,12 +44,12 @@ void soc_by_cc_stop() {
   Timer1.detachInterrupt();
 }
 
-uint32_t soc_by_cc() {
-  return soc_cc/1e3;
-}
-
 uint32_t soc_init_val() {
   return soc_init/1e3;
+}
+
+uint32_t soc_current_charge() {
+  return soc_cc/1e3;
 }
 
 int soc_percentage(uint32_t charge) {
