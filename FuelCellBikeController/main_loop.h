@@ -380,9 +380,9 @@ void loop() {
         lcd.print(" ");
         lcd.print(soc_percentage(soc_init_val()));
         lcd.print("% ");
-        lcd.print(soc_by_cc());
+        lcd.print(soc_charge);
         lcd.print(" ");
-        lcd.print(soc_percentage(soc_by_cc()));
+        lcd.print(soc_percentage(soc_charge));
         lcd.print("% ");
       }
       break;
