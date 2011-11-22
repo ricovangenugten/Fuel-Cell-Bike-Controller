@@ -26,13 +26,13 @@ void solenoid_fc_off() {
 
 void solenoid_fc_toggle_wait() {
   solenoid_fc_on();
-  delay(1000);
+  delay(2000);
   solenoid_fc_off();
 }
 
 void solenoid_fc_toggle_schedule() {
   solenoid_fc_on();
-  solenoid_fc_off_due = millis()+1000;
+  solenoid_fc_off_due = millis()+2000;
 }
 
 void solenoid_fc_toggle_control() {

@@ -45,7 +45,11 @@ int vel_bike() {
 
 }
 
-float vel_bike_odo() {
-  return (vel_total_pulse_count*VELOCITY_C/1e6); // km
+int32_t vel_bike_odo() {
+  return roundf(vel_total_pulse_count*VELOCITY_C/1e3); // m
+}
+
+void vel_bike_odo_reset() {
+  vel_total_pulse_count = 0;
 }
 

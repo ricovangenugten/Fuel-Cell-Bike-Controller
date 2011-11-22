@@ -1,8 +1,8 @@
 uint32_t timestamp, id, iter_start = 0;
-int32_t bike_velocity, soc_charge, i_fc_setpoint, i_fc, i_bat, i_mot, v_fc, v_bat, pw_fc, pw_bat, pw_mot, p_h2, m_h2 = 0;
+int32_t bike_velocity, bike_distance, soc_charge, i_fc_setpoint, i_fc, i_bat, i_mot, i_mot_avg, i_mot_avg_tmp, v_fc, v_bat, pw_fc, pw_bat, pw_mot, p_h2, m_h2 = 0;
 int prev_iter_time, iter_usage, iter_counter, i_control_out = 0;
 float t_h2, t_mot, t_bat = 0;
-bool soc_reset_due, temp_fahrenheit, vel_mph, fc_was_on = false;
+bool soc_reset_due, temp_fahrenheit, vel_mph = false;
 bool browsing_menu = true;
 
 void loop() {
@@ -17,7 +17,7 @@ void loop() {
       } else {
         switch (menu_page()) {
 
-        case PAGE_CUR_CTRL:
+        case PAGE_FC_CTRL:
           i_controller_setpoint(i_controller_setpoint()+1e3);
           break;
 
@@ -31,7 +31,7 @@ void loop() {
       } else {
         switch (menu_page()) {
 
-        case PAGE_CUR_CTRL:
+        case PAGE_FC_CTRL:
           i_controller_setpoint(i_controller_setpoint()-1e3);
           break;
 
@@ -42,21 +42,16 @@ void loop() {
     case BUTTON_ACTION:
       switch(menu_page()) {
 
-      case PAGE_MAIN:
+      case PAGE_DAQ:
         if (daq_on()) {
           // Daq is on, stop it
           daq_stop();
           sd_close_file();
         } else {
-          // Daq is off
-          if (!fc_on()) {
-            // FC is off, start it
-            solenoid_fc_toggle_schedule();
-          } else {
-            // FC is on, start daq
-            if (sd_new_file()) {
-              daq_start();
-            }
+          // Daq is off, start it
+          if (sd_new_file()) {
+            vel_bike_odo_reset();
+            daq_start();
           }
         }
         break;
@@ -68,9 +63,14 @@ void loop() {
         }
         break;
 
-      case PAGE_CUR_CTRL:
-        // Toggle menu browsing or setpoint choosing
-        browsing_menu = !browsing_menu;
+      case PAGE_FC_CTRL:
+        if (fc_on()) {
+          // Toggle menu browsing or setpoint choosing
+          browsing_menu = !browsing_menu;
+        } else {
+          // fc is off, start it
+          solenoid_fc_toggle_schedule();
+        }
         break;
 
       case PAGE_VELOCITY:
@@ -94,11 +94,8 @@ void loop() {
   iter_start = millis();
 
   // Iteration counter
-  if (iter_counter == 10) {
-    iter_counter = 1;
-  } else {
-    iter_counter++;
-  }
+  if (iter_counter == 10) iter_counter = 0;
+  iter_counter++;
 
   // Save current SOC
   soc_charge = soc_current_charge();
@@ -108,22 +105,33 @@ void loop() {
     bike_velocity = vel_bike();
   }
 
+  // Traveled distance
+  bike_distance = vel_bike_odo();
+
   // Get current control setpoint
   i_fc_setpoint = i_controller_setpoint();
 
   // Current measurements
   i_fc = i_fuel_cell();
   i_bat = i_battery();
-  i_mot = i_motor();
+  //i_mot = i_motor();
+  i_mot = i_fc+i_bat;  // temporary hack because of broken motor hall effect sensor
+
+  // Calculate average motor current over a second
+  if (iter_counter == 1) {
+    i_mot_avg = roundf(i_mot_avg_tmp/10);
+    i_mot_avg_tmp = 0;
+  }
+  i_mot_avg_tmp += i_mot;
 
   // Voltage measurements
   v_fc = v_fuel_cell();
   v_bat = v_battery();
 
   // Power estimation
-  pw_fc = int32_t(float(v_fc/1e3)*float(i_fc/1e3));
-  pw_bat = int32_t(float(v_bat/1e3)*float(i_bat/1e3));
-  pw_mot = int32_t(float(v_bat/1e3)*float(i_mot/1e3));
+  pw_fc = roundf((v_fc/1e3)*(i_fc/1e3));
+  pw_bat = roundf((v_bat/1e3)*(i_bat/1e3));
+  pw_mot = roundf((v_bat/1e3)*(i_mot/1e3));
 
   // Pressure measurement
   p_h2 = p_tank();
@@ -146,7 +154,9 @@ void loop() {
       sd_bw.putStr("prev iter time (ms)");
       sd_bw.putStr(DAQ_CSV_SEPARATOR);
       // Velocity measurement
-      sd_bw.putStr("velocity mm/s");
+      sd_bw.putStr("velocity (mm/s)");
+      sd_bw.putStr(DAQ_CSV_SEPARATOR);
+      sd_bw.putStr("distance (m)");
       sd_bw.putStr(DAQ_CSV_SEPARATOR);
       // SOC estimation
       sd_bw.putStr("Bat SOC (mAh)");
@@ -203,6 +213,8 @@ void loop() {
     // Velocity measurement
     sd_bw.putNum(bike_velocity);
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
+    sd_bw.putNum(bike_distance);
+    sd_bw.putStr(DAQ_CSV_SEPARATOR);
     // SOC estimation
     sd_bw.putNum(soc_charge);
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
@@ -249,12 +261,17 @@ void loop() {
     daq_measurement_end();
   }
 
+  // Determine if fuel cell is on
+  fc_determine_state(i_fc);
+
   // Toggle FC solenoid if scheduled
   solenoid_fc_toggle_control();
 
-  // Update current control output
-  i_controller_input(i_fc);
-  i_control_output(i_controller_output());
+  // Update current control output if fuel cell is on
+  if (fc_on()) {
+    i_controller_input(i_fc);
+    i_control_output(i_controller_output());
+  }
 
   // Alternate temperature measurements, do this last because it can be slow..
   switch(iter_counter) {
@@ -278,12 +295,15 @@ void loop() {
       break;
   }
 
-  // Turn battery fan on when temperature is too high or sensor is absent
+  /* // Turn battery fan on when temperature is too high or sensor is absent
   if (t_bat > FAN_BAT_T_THRES || t_bat == DEVICE_DISCONNECTED) {
     fan_battery_on();
   } else {
     fan_battery_off();
-  }
+  } */
+
+  // OCV is very dependent on temperature, so keep battery fan always on to keep temperature as low as possible
+  fan_battery_on();
 
   // Turn motor fan on when temperature is too high or sensor is absent
   if (t_mot > FAN_MOT_T_THRES || t_mot == DEVICE_DISCONNECTED) {
@@ -295,7 +315,12 @@ void loop() {
   // Turn on motor controller when kick stand is in
   if (kickstand_out()) {
     solenoid_motor_off();
-    warning_led_on();
+    // flash led
+    if (iter_counter < 6) {
+      warning_led_on();
+    } else {
+      warning_led_off();
+    }
   } else {
     solenoid_motor_on();
     warning_led_off();
@@ -308,35 +333,27 @@ void loop() {
     lcd.setCursor(0,0);
     switch (menu_page()) {
 
-    // Main page
-    case PAGE_MAIN:
-      lcd.print("Bike: ");
+    // Daq page
+    case PAGE_DAQ:
+      lcd.print("Daq: ");
       if (daq_on()) {
-        lcd.print("stop daq? ");
+        lcd.print("stop?      ");
       } else {
-        if (!fc_on()) {
-          lcd.print("start FC? ");
-        } else {
-          lcd.print("start daq?");
-        }
+        lcd.print("start?     ");
       }
 
       lcd.setCursor(0,1);
-      if (kickstand_out()) {
-        lcd.print("Kickstand is out");
-      } else if (daq_on()) {
+      switch (sd_error()) {
+      case 0:
         lcd.print(sd_file_name);
-      } else if (!fc_on()) {
-        lcd.print("FC is off.      ");
-      } else {
-        switch (sd_error()) {
-          case 1:
-            lcd.print("SD init error   ");
-            break;
-          case 2:
-            lcd.print("SD open error   ");
-            break;
-          }
+        lcd.print("                ");
+        break;
+      case 1:
+        lcd.print("SD init error   ");
+        break;
+      case 2:
+        lcd.print("SD open error   ");
+        break;
       }
       break;
 
@@ -350,15 +367,19 @@ void loop() {
       }
       lcd.setCursor(0,1);
       if (vel_mph) {
-        lcd.print((vel_bike_odo()*0.6214), 1);
-        lcd.print(" mi ");
+        if (daq_on()) {
+          lcd.print((bike_distance*0.6214e-3), 1);
+          lcd.print(" mi ");
+        }
         lcd.print((bike_velocity*2.23e-3), 1);
-        lcd.print(" mph  ");
+        lcd.print(" mph         ");
       } else {
-        lcd.print(vel_bike_odo(), 1);
-        lcd.print(" km ");
+        if (daq_on()) {
+          lcd.print((bike_distance*1e-3), 1);
+          lcd.print(" km ");
+        }
         lcd.print((bike_velocity*3.6e-3), 1);
-        lcd.print(" kmh  ");
+        lcd.print(" kmh         ");
       }
       break;
 
@@ -378,32 +399,31 @@ void loop() {
       } else {
         lcd.print(soc_init_val());
         lcd.print(" ");
-        lcd.print(soc_percentage(soc_init_val()));
-        lcd.print("% ");
         lcd.print(soc_charge);
         lcd.print(" ");
         lcd.print(soc_percentage(soc_charge));
-        lcd.print("% ");
+        lcd.print("%   ");
       }
       break;
 
-    // Current control page
-    case PAGE_CUR_CTRL:
-      lcd.print("Cur ctrl: ");
+    // Fuel cell control page
+    case PAGE_FC_CTRL:
+      lcd.print("FC: ");
       if (browsing_menu) {
-        switch (i_controller_state()) {
-        case 0:
-          lcd.print("set?  ");
-          break;
-        case 1:
-          lcd.print("no in ");
-          break;
-        case 2:
-          lcd.print("min   ");
-          break;
-        case 3:
-          lcd.print("max   ");
-          break;
+        if (fc_on()) {
+          switch (i_controller_state()) {
+          case 0:
+            lcd.print("set current?");
+            break;
+          case 1:
+            lcd.print("ctrl out min");
+            break;
+          case 2:
+            lcd.print("ctrl out max");
+            break;
+          }
+        } else {
+          lcd.print("start fc?   ");
         }
       } else {
         // choosing new setpoint
@@ -412,7 +432,7 @@ void loop() {
       lcd.setCursor(0,1);
       lcd.print("Set:");
       lcd.print(roundf(i_controller_setpoint()/1e3));
-      lcd.print(" A FC:");
+      lcd.print(" A Act:");
       lcd.print(roundf(i_fc/1000));
       lcd.print(" A  ");
       break;
@@ -503,29 +523,42 @@ void loop() {
     }
   }
 
-  // SOC reset due?
+  // SOC reset due? SOC reset disrupts the iteration flow as it takes about 6 seconds
   if (soc_reset_due) {
 
-    // stop state of charge estimation
+    // Stop state of charge estimation
     soc_by_cc_stop();
 
-    // switch everything off to minimize current
-    fc_was_on = fc_on();
-    if (fc_on()) solenoid_fc_toggle_wait();
-    fan_motor_off();
-    fan_battery_off();
-    solenoid_contactor_off();
-    delay(2000);
+    // Set fc control output to 0 minimizing the fc current
+    i_control_output(0);
 
-    // estimate soc by ocv and restart soc by cc
+    // Turn off motor and motor fan if they're on
+    fan_motor_off();
+    solenoid_motor_off();
+
+    // Wait a while
+    delay(3000);
+
+    // Display battery current and voltage
+    lcd.setCursor(0,1);
+    lcd.print("Bat:");
+    lcd.print((i_battery()/1e3), 1);
+    lcd.print(" A ");
+    lcd.print((v_battery()/1e3), 1);
+    lcd.print(" V ");
+
+    // Estimate soc by ocv and restart coulomb counting
     soc_by_cc_start(soc_by_ocv(v_battery()));
 
-    // switch everything back on
-    solenoid_contactor_on();
-    delay(500);
-    lcd.begin(LCD_COLS, LCD_ROWS);
-    if (!fc_on() && fc_was_on) solenoid_fc_toggle_wait();
+    // set fc control output to the value determined by the current controller
+    i_control_output(i_controller_output());
+
+    // SOC reset done
     soc_reset_due = false;
+
+    // Wait before continuing
+    delay(3000);
+
   }
 
   // iteration end, save iteration time

@@ -4,15 +4,9 @@ int i_controller_output_value;
 void i_controller_input(int32_t i_controller_input_value) {
 
   if (I_CONTROLLER_FB_ON) {
-    if (i_controller_input_value < 500) {
-      // input too low, output 0
-      i_controller_state_id = 1;
-      i_controller_output_value = 0;
-    } else {
-      // calculate new output value using feedback
-      i_controller_state_id = 0;
-      i_controller_output_value += roundf((i_controller_setpoint_value-i_controller_input_value)*I_CONTROLLER_FB_C);
-    }
+    // calculate new output value using feedback
+    i_controller_state_id = 0;
+    i_controller_output_value += roundf((i_controller_setpoint_value-i_controller_input_value)*I_CONTROLLER_FB_C);
   } else {
     // calculate new output value without feedback
     i_controller_state_id = 0;

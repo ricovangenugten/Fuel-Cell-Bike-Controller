@@ -27,7 +27,6 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 #include "hardware/button_input.h"
 #include "hardware/pot_input.h"
 #include "hardware/kickstand_input.h"
-#include "hardware/fc_state_input.h"
 #include "hardware/led_output.h"
 #include "hardware/solenoid_control.h"
 #include "hardware/fan_control.h"
@@ -45,6 +44,8 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 #include "basic/data_acquisition.h"
 #include "basic/hydrogen_mass.h"
 #include "basic/current_controller.h"
+#include "basic/fc_state.h"
+#include "basic/ems_ecms.h"
 
 // General setup function
 #include "setup.h"
@@ -54,7 +55,7 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 // Loop function, include "main_loop.h" or any test like "tests/fans.h" here to run it
 #include "main_loop.h"
-//#include "tests/current_bat.h"
+//#include "tests/current_fc_mot.h"
 
 // Let's roll!
 int main(void) {

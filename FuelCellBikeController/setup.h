@@ -44,7 +44,8 @@ void setup () {
 
   lcd.setCursor(0,1);
   lcd.print("FC ctrl on..    ");
-  if (!fc_on()) solenoid_fc_toggle_wait();
+  solenoid_fc_toggle_wait();
+  fc_is_on();
 
   // start velocity measurement
   vel_begin();

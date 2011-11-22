@@ -19,10 +19,10 @@
 
 // Menu config
 #define MENU_REFR_TIME   300       // [ms]
-#define PAGE_MAIN          1
+#define PAGE_DAQ           1
 #define PAGE_VELOCITY      2
 #define PAGE_SOC           3
-#define PAGE_CUR_CTRL      4
+#define PAGE_FC_CTRL       4
 #define PAGE_CURRENT       5
 #define PAGE_VOLTAGE       6
 #define PAGE_POWER         7
@@ -37,10 +37,10 @@
 
 
 // voltage sensor calibration
-#define V_BAT_C           84       // [mV/step]
-#define V_FC_C            85       // [mV/step]
-#define V_BAT_ZERO       133
-#define V_FC_ZERO        172
+#define V_BAT_C           87.59       // [mV/step]
+#define V_FC_C            87.59       // [mV/step]
+#define V_BAT_ZERO       142
+#define V_FC_ZERO        179
 
 // current sensor calibration
 // C [amps / step] = 5 [volts] / 1023 [steps] * Ir [rated milliAmps] / 0.625 [volts / Ir amps] / amplifier_gain
@@ -54,7 +54,7 @@
 #define I_BAT_HIGH_ZERO  509
 #define I_MOTOR_ZERO     509
 
-#define I_BAT_CROSSOVER  150e3
+#define I_BAT_CROSSOVER  200e3
 
 // Pressure sensor calibration
 #define P_TANK_C          20.8067  // 6.894*617.5*5/1023 [kPa]
@@ -63,7 +63,7 @@
 #define M_HYDROGEN_C     242.47    // 10^3 [Pa/kPa] * V_tanks [m^3] * M_h2 [g/mol] / R [J/mol K] = 1000*1*2.016/8.3145=242.47
 
 // General SOC config
-#define SOC_CAPACITY       5.000e3 // [mAh]
+#define SOC_CAPACITY       25e3    // [mAh]
 
 // SOC by OCV estimation
 // Fitted data measured at a 2A load to account for the 12v system still drawing power
@@ -81,16 +81,14 @@
 
 // SOC by coulomb counting
 #define SOC_CC_INTERVAL    1e4     // [us]
-#define SOC_CC_CHARGE_EFF  0.9
-#define SOC_CC_DISCHA_EFF  0.9
+#define SOC_CC_CHARGE_EFF  0.85
+#define SOC_CC_DISCHA_EFF  0.85
 #define SOC_CC_I_TO_CAP_C  1/360   // 1/360 [uAh/mA] = 1e3 [uA/mA] * 1/3600 [h/s] * 1e-6 [s/us] * 1e4 [us]
 
 // Current controller
 #define I_CONTROLLER_C     5.1e-3  // [steps/mA]
-#define I_CONTROLLER_FB_ON false   // feedback on?
+#define I_CONTROLLER_FB_ON true    // feedback on?
 #define I_CONTROLLER_FB_C  2.0e-3  // [steps/mA]
 
 // Velocity
 #define VELOCITY_C       220       // 1760 [mm wheel circumference] / 8 [pulses] = 220 [mm/pulse]
-
-

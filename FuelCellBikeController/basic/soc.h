@@ -18,7 +18,7 @@ uint32_t soc_by_ocv(uint32_t v_bat) {
     soc_ocv += current_term;
   }
 
-  return roundf(soc_ocv);
+  return roundf(soc_ocv*5);
 }
 
 void soc_by_cc_count() {
