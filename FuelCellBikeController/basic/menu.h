@@ -23,7 +23,8 @@ void menu_prev() {
   menu_refresh_due_now();
 }
 
-int menu_page() {
+int menu_page(int id = -1) {
+  if (id > -1) menu_page_id = id;
   return menu_page_id;
 }
 

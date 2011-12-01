@@ -16,36 +16,29 @@ void setup () {
   digitalWrite(BUTTON_4, HIGH);
   digitalWrite(BUTTON_5, HIGH);
   digitalWrite(SW_KICKSTAND, HIGH);
+  digitalWrite(VEL_BIKE,  HIGH);
+
+  // Turn contactor on
+  solenoid_contactor_on();
+  delay(100);
 
   // setup lcd
   lcd.begin(LCD_COLS, LCD_ROWS);
   lcd.print("UCD Hybrid Bike ");
-  delay(1000);
 
-  // setup temp sensors
+  // Setup temp sensors
   t_setup();
 
-  // setup current control output
+  // Setup current control output
   i_control_setup();
 
-  lcd.setCursor(0,1);
-  lcd.print("Estimating SOC..");
-  delay(1000);
-
-  // Initial SOC estimation
-  soc_by_cc_start(soc_by_ocv(v_battery()));
-
-  solenoid_contactor_on();
-  delay(100);
-  lcd.begin(LCD_COLS, LCD_ROWS);
-  lcd.setCursor(0,1);
-  lcd.print("Contactor on..  ");
-  delay(900);
-
+  // Turn fuel cell controller on
   lcd.setCursor(0,1);
   lcd.print("FC ctrl on..    ");
   solenoid_fc_toggle_wait();
-  fc_is_on();
+
+  // Estimate initial SOC, takes a while
+  soc_estimation_ritual();
 
   // start velocity measurement
   vel_begin();

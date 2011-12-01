@@ -32,7 +32,7 @@ void solenoid_fc_toggle_wait() {
 
 void solenoid_fc_toggle_schedule() {
   solenoid_fc_on();
-  solenoid_fc_off_due = millis()+2000;
+  if (solenoid_fc_off_due == 0) solenoid_fc_off_due = millis()+2000;
 }
 
 void solenoid_fc_toggle_control() {

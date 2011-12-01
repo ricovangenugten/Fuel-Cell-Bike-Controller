@@ -1,9 +1,9 @@
 bool fc_state_on = false;
 uint32_t fc_state_dead_time;
 
-void fc_determine_state(int32_t i_fc) {
+void fc_determine_state(int32_t v_fc) {
 
-  bool fc_inst_state = (i_fc > 500);
+  bool fc_inst_state = (v_fc > FC_STATE_VOLTAGE_THRESHOLD);
 
   if (fc_state_on != fc_inst_state) {
     if (fc_state_dead_time == 0) {
@@ -22,8 +22,4 @@ void fc_determine_state(int32_t i_fc) {
 
 bool fc_on() {
   return fc_state_on;
-}
-
-void fc_is_on() {
-  fc_state_on = true;
 }

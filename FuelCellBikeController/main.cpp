@@ -40,11 +40,12 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 // Basic functionality
 #include "basic/menu.h"
-#include "basic/soc.h"
 #include "basic/data_acquisition.h"
 #include "basic/hydrogen_mass.h"
-#include "basic/current_controller.h"
+//#include "basic/current_controller.h"
+#include "basic/fc_power_controller.h"
 #include "basic/fc_state.h"
+#include "basic/soc.h"
 #include "basic/ems_ecms.h"
 
 // General setup function

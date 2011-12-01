@@ -1,9 +1,9 @@
 int32_t i_battery_low() {
-  return roundf((analogRead(I_BAT_LOW)-I_BAT_LOW_ZERO)*I_BAT_LOW_C);
+  return roundf((int32_t(analogRead(I_BAT_LOW))-I_BAT_LOW_ZERO)*I_BAT_LOW_C);
 }
 
 int32_t i_battery_high() {
-  return roundf((analogRead(I_BAT_HIGH)-I_BAT_HIGH_ZERO)*I_BAT_HIGH_C);
+  return roundf((int32_t(analogRead(I_BAT_HIGH))-I_BAT_HIGH_ZERO)*I_BAT_HIGH_C);
 }
 
 int32_t i_battery() {
@@ -17,12 +17,12 @@ int32_t i_battery() {
 
 int32_t i_fuel_cell() {
   int reading = analogRead(I_FC);
-  if (reading < I_FC_ZERO) return 0;
-  else return roundf((reading-I_FC_ZERO)*I_FC_C);
+  if (reading == 0) return 0;
+  else return roundf((int32_t(reading)-I_FC_ZERO)*I_FC_C);
 }
 
 int32_t i_motor() {
   int reading = analogRead(I_MOTOR);
   if (reading < I_MOTOR_ZERO) return 0;
-  else return roundf((reading-I_MOTOR_ZERO)*I_MOTOR_C);
+  else return roundf((int32_t(reading)-I_MOTOR_ZERO)*I_MOTOR_C);
 }

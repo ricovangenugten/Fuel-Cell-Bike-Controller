@@ -3,6 +3,7 @@
 #define T_TANK          6
 #define T_MOTOR         7
 #define FAN_MOTOR      10
+#define VEL_BIKE       19
 
 // digital double row left
 #define SOL_FC         36
