@@ -1,21 +1,36 @@
-uint32_t volatile vel_first_pulse_id, vel_last_meas_time, vel_total_pulse_count = 0;
+uint32_t volatile vel_first_pulse_id, vel_first_pulse_time, vel_last_pulse_time, vel_total_pulse_count, vel_signal_low_at, vel_signal_high_at = 0;
 
 void vel_pulse() {
 
-  // increment total pulse count
-  vel_total_pulse_count++;
-
-  /*if (vel_first_pulse_time == 0) {
-    vel_first_pulse_time = millis();
-    vel_first_pulse_id = vel_total_pulse_count;
+  if (digitalRead(VEL_BIKE) == LOW) {
+    vel_signal_low_at = micros();
   }
 
-  vel_last_pulse_time = millis();*/
+  if (digitalRead(VEL_BIKE) == HIGH) {
+  // If the signal has been low long enough this is an actual pulse
+    if (vel_signal_low_at > 0 && (micros()-vel_signal_low_at) > 3000) {
 
+      // Reset low timer
+      vel_signal_low_at = 0;
+
+      // Increment pulse counter
+      vel_total_pulse_count++;
+
+      // If this is the first pulse of a measurement
+      if (vel_first_pulse_id == 0) {
+        // Save pulse time and id
+        vel_first_pulse_id = vel_total_pulse_count;
+        vel_first_pulse_time = millis();
+      }
+
+      // Save pulse time
+      vel_last_pulse_time = millis();
+    }
+  }
 }
 
 void vel_begin() {
-  attachInterrupt(4, vel_pulse, FALLING);
+  attachInterrupt(4, vel_pulse, CHANGE);
 }
 
 int vel_bike() {
@@ -24,19 +39,22 @@ int vel_bike() {
   int meas_pulses = vel_total_pulse_count-vel_first_pulse_id;
 
   // time since last measurement
-  int meas_time = millis()-vel_last_meas_time;
-
-  // reset measurement
-  vel_last_meas_time = millis();
+  int meas_time = vel_last_pulse_time-vel_first_pulse_time;
 
   // save next pulses id
-  vel_first_pulse_id = vel_total_pulse_count+1;
+  vel_first_pulse_id = 0;
 
   // return 0 if not enough pulses are counted
   if (meas_pulses < 2) return 0;
 
+  // calculate velocity
+  int vel = roundf(meas_pulses*1e3/meas_time*VELOCITY_C); // mm / s
+
+  // if float rounding determines velocity to be < 0, return 0
+  if (vel < 0) return 0;
+
   // return velocity
-  return meas_pulses*1e3/meas_time*VELOCITY_C; // mm / s
+  return vel;
 
 }
 

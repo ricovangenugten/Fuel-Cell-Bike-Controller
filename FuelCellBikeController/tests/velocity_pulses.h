@@ -142,110 +142,18 @@ void loop() {
   // When daq start is scheduled and the iteration counter passes 0
   if (daq_start_scheduled() && iter_counter == 0) {
 
-    // Start daq
-    daq_start_now();
-
     // Save time
     daq_start = iter_start;
 
     // Write CSV header line
-    sd_bw.putStr("id");
+    sd_bw.putStr("timestamp (us)");
     sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("timestamp (ms)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("prev iter time (ms)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("velocity (mm/s)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("distance (mm)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("Bat SOC (mAh)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("Bat SOC (%)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("i_fc (mA)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("i_bat (mA)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("i_mot (mA)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("v_fc (mV)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("v_bat (mV)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("p_fc_setpoint (W)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("p_fc (W)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("p_bat (W)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("p_mot (W)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("t_h2 (deg C)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("t_bat (10^-2 deg C)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("t_mot (deg C)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("prs_h2 (kPa)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("m_h2_tank (g)");
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putStr("\r\n");
+    sd_bw.putStr("vel sensor state\r\n");
     sd_bw.writeBuf();
-
-  }
-
-  // If the daq has been started
-  if (daq_started()) {
-
-    // Write CSV line
-    sd_bw.putNum(daq_measurement_id());
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum((iter_start-daq_start));
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(prev_iter_time);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(bike_velocity);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(bike_distance);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(soc_charge);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(soc_perc);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(i_fc);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(i_bat);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(i_mot);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(v_fc);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(v_bat);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(p_controller_setpoint());
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(p_fc);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(p_bat);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(p_mot);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(roundf(t_h2*100));
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(roundf(t_bat*100));
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(roundf(t_mot*100));
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(prs_h2);
-    sd_bw.putStr(DAQ_CSV_SEPARATOR);
-    sd_bw.putNum(m_h2);
-    sd_bw.putStr("\r\n");
-    sd_bw.writeBuf();
-
-    daq_measurement_increment();
-
+    
+    // Start daq
+    daq_start_now();
+    
   }
 
   // If a daq stop has been scheduled and the iteration counter hits 9

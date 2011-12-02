@@ -35,7 +35,6 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 #include "hardware/current_sensing.h"
 #include "hardware/pressure_sensing.h"
 #include "hardware/temperature_sensing.h"
-#include "hardware/velocity_sensing.h"
 #include "hardware/sd_storage.h"
 
 // Basic functionality
@@ -48,6 +47,9 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 #include "basic/soc.h"
 #include "basic/ems_ecms.h"
 
+#include "hardware/velocity_sensing.h"
+
+
 // General setup function
 #include "setup.h"
 
@@ -56,6 +58,7 @@ LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 // Loop function, include "main_loop.h" or any test like "tests/fans.h" here to run it
 #include "main_loop.h"
+//#include "tests/velocity_pulses.h"
 //#include "tests/current_fc_mot.h"
 
 // Let's roll!
