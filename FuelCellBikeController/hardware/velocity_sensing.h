@@ -35,13 +35,16 @@ void vel_begin() {
 
 int vel_bike() {
 
+  // if the first pulse id hasn't been set return 0
+  if (vel_first_pulse_id == 0) return 0;
+
   // pulses since last measurement
   int meas_pulses = vel_total_pulse_count-vel_first_pulse_id;
 
   // time since last measurement
   int meas_time = vel_last_pulse_time-vel_first_pulse_time;
 
-  // save next pulses id
+  // reset first pulse id so it will be set on the next pulse
   vel_first_pulse_id = 0;
 
   // return 0 if not enough pulses are counted
